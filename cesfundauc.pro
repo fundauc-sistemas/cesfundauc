@@ -86,11 +86,11 @@ FORMS    += \
 
 RESOURCES += \
     icons.qrc \
-    icons.qrc
+
 INCLUDEPATH += C:\NCReport\2.8.1.mingw.eval\include
 LIBS += C:\NCReport\2.8.1.mingw.eval\bin\ncreport2.dll
 QMAKE_LFLAGS = -static-libgcc -static-libstdc++
 
 OTHER_FILES += \
-    prototipo.qss
+    prototipo.qss \
 

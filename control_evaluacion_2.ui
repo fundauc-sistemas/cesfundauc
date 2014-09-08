@@ -780,6 +780,11 @@ color: rgb(00,56,147);</string>
      </column>
      <column>
       <property name="text">
+       <string>Calificación</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>% por Nivel</string>
       </property>
      </column>

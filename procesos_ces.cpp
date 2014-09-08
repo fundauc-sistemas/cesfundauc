@@ -2300,6 +2300,7 @@ void procesos_ces::editarMetodo(int row,int column)
     reg_curso.tabla_metodo->setCellWidget(row,4,lines->last());
     lines->append(new QLineEdit(reg_curso.tabla_metodo->item(row,5)->text()));
     reg_curso.tabla_metodo->setCellWidget(row,5,lines->last());
+
     consulta.exec("select descripcion from calendarios order by descripcion");
     while(consulta.next())
     {
@@ -2379,7 +2380,7 @@ void procesos_ces::guardarMetodo()
             else
                 consulta.exec("commit");
         }
-        if(!consulta.exec("insert into precios values('"+lines->at(0)->text()+"','C',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'0','0','0','V')"))
+        if(!consulta.exec("insert into precios values('"+lines->at(0)->text()+"','C',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'0','0','0','V','0','0')"))
             QMessageBox::critical(0,"Error Precio",consulta.lastError().text());
         else
             consulta.exec("commit");
@@ -2614,7 +2615,7 @@ void procesos_ces::guardarMaterial()
         consulta.exec("commit");
         llenarMateriales();
         container.botonGuardar->setEnabled(false);
-        if(!consulta.exec("insert into precios values('"+lines->at(0)->text()+"','"+combos->at(0)->currentText()+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'0','0','0','V')"))
+        if(!consulta.exec("insert into precios values('"+lines->at(0)->text()+"','"+combos->at(0)->currentText()+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'0','0','0','V','0','0')"))
             QMessageBox::critical(0,"Error",consulta.lastError().text());
         else
             consulta.exec("commit");
@@ -5989,8 +5990,7 @@ void procesos_ces::setControlEvaluacion()
     control_evaluacion.tabla->setColumnWidth(2,80);
     control_evaluacion.tabla->setColumnWidth(3,80);
     control_evaluacion.tabla->setColumnWidth(4,80);
-    //control_evaluacion.tabla->setColumnWidth(5,80);
-    //control_evaluacion.tabla->setColumnWidth(6,300);
+    control_evaluacion.tabla->setColumnWidth(5,80);
 
     control_evaluacion.metodo->addItem("-");
     consulta.exec("select descripcion from metodos order by descripcion");
@@ -6054,20 +6054,21 @@ void procesos_ces::modalidadChanged4(QString s)
     }
 
     control_evaluacion.periodo_2->clear();
+    //control_evaluacion.periodo_2->addItem("-");
 
     if(modalidad=="19")
-        consulta.exec("select periodo,to_char(fecha_ini,'dd-mm-yyyy'),to_char(fecha_fin,'dd-mm-yyyy') from calendarios_detalle where id_calendario='"+calendario+"' and modalidad='1' and fecha_ini <= to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy') and fecha_fin >= to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy')");
+        consulta.exec("select periodo,to_char(fecha_ini,'dd-mm-yyyy'),to_char(fecha_fin,'dd-mm-yyyy') from calendarios_detalle where id_calendario='"+calendario+"' and modalidad='1'");
     else
-        consulta.exec("select periodo,to_char(fecha_ini,'dd-mm-yyyy'),to_char(fecha_fin,'dd-mm-yyyy') from calendarios_detalle where id_calendario='"+calendario+"' and modalidad='"+modalidad+"' and fecha_ini <= to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy') and fecha_fin >= to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy')");
+        consulta.exec("select periodo,to_char(fecha_ini,'dd-mm-yyyy'),to_char(fecha_fin,'dd-mm-yyyy') from calendarios_detalle where id_calendario='"+calendario+"' and modalidad='"+modalidad+"'");
     while(consulta.next())
     {
-        if(consulta.value(0).toInt()>1)
-            control_evaluacion.periodo_2->addItem(tr("%1").arg(consulta.value(0).toInt()-1));
+        //if(consulta.value(0).toInt()>1)
+            //control_evaluacion.periodo_2->addItem(tr("%1").arg(consulta.value(0).toInt()-1));
         control_evaluacion.periodo_2->addItem(consulta.value(0).toString());
         control_evaluacion.inicio->setText(consulta.value(1).toString());
         control_evaluacion.fin->setText(consulta.value(2).toString());
     }
-    control_evaluacion.periodo_2->setCurrentIndex(1);
+    control_evaluacion.periodo_2->setCurrentIndex(0);
     connect(control_evaluacion.seccion,SIGNAL(currentIndexChanged(QString)),this,SLOT(seccionChanged(QString)));
     connect(control_evaluacion.periodo_2,SIGNAL(currentIndexChanged(QString)),this,SLOT(periodoChanged2(QString)));
 }
@@ -6107,7 +6108,7 @@ void procesos_ces::seccionChanged(QString s)
 {
     QString seccion;
     QSqlQuery consulta,consulta2;
-    seccion=s.left(5);
+    seccion=s.left(s.indexOf("("));
     consulta.exec("select cedula_prof,id_metodo from secciones where id_seccion='"+seccion+"'");
     while(consulta.next())
     {
@@ -6130,11 +6131,18 @@ void procesos_ces::llenarControlEvaluacion(QString s)
 {
     QSqlQuery consulta,consulta2;
     QTableWidgetItem *ni;
+    double porc=0;
     int row,i;
     lines = new QList<QLineEdit*>();
 
     for(i=control_evaluacion.tabla->rowCount()-1;i>=0;i--)
         control_evaluacion.tabla->removeRow(i);
+
+    consulta.exec("select porcentaje from ponderacion_niveles a,secciones b where a.id_metodo=b.id_metodo and a.nivel=b.nivel and b.id_seccion='"+s+"'");
+    while(consulta.next())
+    {
+        porc=consulta.value(0).toDouble();
+    }
 
     consulta.exec("select matricula from ficha_academica where status='V' and id_evento=2 and id_seccion='"+s+"' and fec_inicio=to_date('"+control_evaluacion.inicio->text()+"','dd-mm-yyyy')");
     while(consulta.next())
@@ -6162,18 +6170,29 @@ void procesos_ces::llenarControlEvaluacion(QString s)
             ni = new QTableWidgetItem(tr("%1").arg(consulta2.value(0).toString()));
             control_evaluacion.tabla->setItem(row,2,ni);
         }
-        consulta2.exec("select calificacion from ficha_academica where matricula='"+consulta.value(0).toString()+"' and id_evento=21 and status='V'");
+        disconnect(container.botonGuardar,SIGNAL(clicked()),0,0);
+        connect(container.botonGuardar,SIGNAL(clicked()),this,SLOT(actualizarColEvaluacion()));
+        consulta2.exec("select calificacion,observacion from ficha_academica where matricula='"+consulta.value(0).toString()+"' and id_evento=21 and status='V'");
         while(consulta2.next())
         {
-            control_evaluacion.tabla->removeCellWidget(row,4);
-            ni = new QTableWidgetItem(tr("%1").arg(consulta2.value(0).toString()));
-            control_evaluacion.tabla->setItem(row,4,ni);
+            if(consulta2.value(0).toString()=="0")
+            {
+                lines->last()->setText(consulta2.value(1).toString());
+                ni = new QTableWidgetItem(tr("%1").arg("0"));
+            }
+            else
+            {
+                lines->last()->setText(consulta2.value(0).toString());
+                ni = new QTableWidgetItem(tr("%1").arg(consulta2.value(0).toDouble()*porc/100));
+            }
+            control_evaluacion.tabla->setItem(row,5,ni);
+            disconnect(container.botonGuardar,SIGNAL(clicked()),0,0);
+            connect(container.botonGuardar,SIGNAL(clicked()),this,SLOT(actualizarColEvaluacion2()));
         }
     }
 
     disconnect(container.botonImprimir,SIGNAL(clicked()),0,0);
-    connect(control_evaluacion.tabla,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(editarColEvaluacion(int,int)));
-    connect(container.botonGuardar,SIGNAL(clicked()),this,SLOT(actualizarColEvaluacion()));
+    //connect(control_evaluacion.tabla,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(editarColEvaluacion(int,int)));
     container.botonGuardar->setEnabled(true);
     container.botonImprimir->setEnabled(true);
 }
@@ -6200,9 +6219,9 @@ void procesos_ces::actualizarColEvaluacion()
     QString evento,matricula,seccion,curso;
     QSqlQuery consulta;
     int i;
-
     evento="21";
-    seccion=control_evaluacion.seccion->currentText().left(5);
+    seccion=control_evaluacion.seccion->currentText().left(control_evaluacion.seccion->currentText().indexOf("(")-1);
+
     consulta.exec("select id_metodo from metodos where descripcion='"+control_evaluacion.metodo->currentText()+"'");
     while(consulta.next())
     {
@@ -6216,7 +6235,11 @@ void procesos_ces::actualizarColEvaluacion()
         {
             matricula=consulta.value(0).toString();
         }
-        if(!consulta.exec("insert into ficha_academica values(ficha_academica_s.nextval,'"+evento+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+lines->at(i)->text()+"','N','"+seccion+"','"+curso+"','"+matricula+"','V',to_date('"+control_evaluacion.inicio->text()+"','dd-mm-yyyy'))"))
+        if(lines->at(i)->text()=="NC" || lines->at(i)->text()=="NA")
+            consulta.prepare("insert into ficha_academica values(ficha_academica_s.nextval,'"+evento+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'0','"+lines->at(i)->text()+"','"+seccion+"','"+curso+"','"+matricula+"','V',to_date('"+control_evaluacion.inicio->text()+"','dd-mm-yyyy'))");
+        else
+            consulta.prepare("insert into ficha_academica values(ficha_academica_s.nextval,'"+evento+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+lines->at(i)->text()+"','','"+seccion+"','"+curso+"','"+matricula+"','V',to_date('"+control_evaluacion.inicio->text()+"','dd-mm-yyyy'))");
+        if(!consulta.exec())
             QMessageBox::critical(0,"Error Guardar Definitiva",consulta.lastError().text());
         else
         {
@@ -6236,7 +6259,7 @@ void procesos_ces::actualizarColEvaluacion2()//Probar
     int i;
 
     evento="21";
-    seccion=control_evaluacion.seccion->currentText().left(5);
+    seccion=control_evaluacion.seccion->currentText().left(control_evaluacion.seccion->currentText().indexOf("(")-1);
     consulta.exec("select id_metodo from metodos where descripcion='"+control_evaluacion.metodo->currentText()+"'");
     while(consulta.next())
     {
@@ -6250,8 +6273,12 @@ void procesos_ces::actualizarColEvaluacion2()//Probar
         {
             matricula=consulta.value(0).toString();
         }
-        if(!consulta.exec("update ficha_academica set calificacion='"+lines->at(i)->text()+"' where matricula='"+matricula+"' and id_evento='"+evento+"' and id_curso='"+curso+"'"))
-            QMessageBox::critical(0,"Error Guardar Definitiva",consulta.lastError().text());
+        if(lines->at(i)->text()=="NC" || lines->at(i)->text()=="NA")
+            consulta.prepare("update ficha_academica set calificacion='0',observacion='"+lines->at(i)->text()+"' where matricula='"+matricula+"' and id_evento='"+evento+"' and id_curso='"+curso+"' and id_seccion='"+seccion+"'");
+        else
+            consulta.prepare("update ficha_academica set calificacion='"+lines->at(i)->text()+"',observacion='' where matricula='"+matricula+"' and id_evento='"+evento+"' and id_curso='"+curso+"' and id_seccion='"+seccion+"'");
+        if(!consulta.exec())
+            QMessageBox::critical(0,"Error Actualizar Definitiva",consulta.lastError().text());
         else
         {
             consulta.exec("commit");
