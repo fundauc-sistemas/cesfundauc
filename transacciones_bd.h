@@ -13,10 +13,10 @@ static bool crearconexion()
     db.setPort(1521);
 
     //Normalizar todos los servidores
-    //db.setHostName("servidor");//ingresando nombre de host
-    db.setHostName("localhost");
-    //db.setDatabaseName("cesdata");//ingresando nombre de base de datos
-    db.setDatabaseName("ceslocal");
+    db.setHostName("servidor");//ingresando nombre de host
+    //db.setHostName("localhost");
+    db.setDatabaseName("cesdata");//ingresando nombre de base de datos
+    //db.setDatabaseName("ceslocal");
     db.setUserName("ces");//ingresando nombre de usuario
     db.setPassword("fundauc");//ingresando contraseña
     if (!db.open())

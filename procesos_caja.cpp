@@ -1945,7 +1945,7 @@ void procesos_caja::llenarCurso(QString s)
     QString nivel,horario,mod,price,salon,metodo,cal;
     float libro,cd,guia,cuota;
     QSqlQuery consulta,consulta2;
-
+    QDate fecha=QDate::currentDate();
     libro=guia=cd=0;
     nivel=s.left(2);
     salon=s.right(1);
@@ -1972,10 +1972,27 @@ void procesos_caja::llenarCurso(QString s)
         QMessageBox::information(0,"Tope - Actual",tr("%1-%2").arg(tope).arg(actual));
     }
 
-    if((prog_academico=="2")&&(mod=="02"||mod=="19"||mod=="03"))
-        consulta.exec("select precio2 from precios where item='"+f_curso+"'");
+    consulta.exec("select min(fecha) from ficha_academica where matricula='"+factura.f_matricula->text()+"' and id_curso='"+f_curso+"'");
+    while(consulta.next())
+    {
+        if(consulta.value(0).toString()!="")
+            fecha=consulta.value(0).toDate();
+    }
+
+    if(fecha<QDate::fromString("15-07-2014","dd-MM-yyyy"))
+    {
+        if((prog_academico=="2")&&(mod=="02"||mod=="19"||mod=="03"))
+            consulta.exec("select precio5 from precios where item='"+f_curso+"'");
+        else
+            consulta.exec("select precio4 from precios where item='"+f_curso+"'");
+    }
     else
-        consulta.exec("select precio1 from precios where item='"+f_curso+"'");
+    {
+        if((prog_academico=="2")&&(mod=="02"||mod=="19"||mod=="03"))
+            consulta.exec("select precio2 from precios where item='"+f_curso+"'");
+        else
+            consulta.exec("select precio1 from precios where item='"+f_curso+"'");
+    }
 
     while(consulta.next())
     {
@@ -2026,7 +2043,6 @@ void procesos_caja::llenarCurso(QString s)
                     cd=consulta2.value(0).toDouble();
                 }
             }
-            //PARA AMERICAN ENGLISH LIBRO=0. PROBAR
             price.setNum(f_costo.toDouble()+libro+guia+cd,'g',10);
         }
         consulta.exec("select descripcion from modalidades where id_modalidad='"+mod+"'");
@@ -6703,7 +6719,7 @@ void procesos_caja::actualizarPrecio()
 
     if(reg_precios.p_curso->isChecked())
     {
-        if(consulta.exec("update precios set precio1='"+lines->at(0)->text()+"',precio2='"+lines->at(1)->text()+"',precio3='"+lines->at(2)->text()+"' where item='"+updating+"'"))
+        if(consulta.exec("update precios set precio1='"+lines->at(0)->text()+"',precio4='"+lines->at(1)->text()+"',precio2='"+lines->at(2)->text()+"',precio5='"+lines->at(3)->text()+"',precio3='"+lines->at(4)->text()+"' where item='"+updating+"'"))
         {
             consulta.exec("commit");
             cursoChecked(2);
@@ -6785,6 +6801,10 @@ void procesos_caja::editarPrecio(int row,int column)
         reg_precios.tabla->setCellWidget(row,3,lines->last());
         lines->append(new QLineEdit(reg_precios.tabla->item(row,4)->text()));
         reg_precios.tabla->setCellWidget(row,4,lines->last());
+        lines->append(new QLineEdit(reg_precios.tabla->item(row,5)->text()));
+        reg_precios.tabla->setCellWidget(row,5,lines->last());
+        lines->append(new QLineEdit(reg_precios.tabla->item(row,6)->text()));
+        reg_precios.tabla->setCellWidget(row,6,lines->last());
     }
     connect(reg_precios.tabla->cellWidget(row,2),SIGNAL(returnPressed()),this,SLOT(actualizarPrecio()));
     disconnect(container.botonGuardar,SIGNAL(clicked()),0,0);
@@ -6819,7 +6839,7 @@ void procesos_caja::cursoChecked(int state)
         reg_precios.p_boleta->setChecked(false);
         reg_precios.p_factura->setChecked(false);
 
-        consulta.exec("select item,fecha,precio1,precio2,precio3 from precios where tipo_item='C'");
+        consulta.exec("select item,fecha,precio1,precio2,precio3,precio4,precio5 from precios where tipo_item='C'");
         while(consulta.next())
         {
             row = reg_precios.tabla->rowCount();
@@ -6834,10 +6854,14 @@ void procesos_caja::cursoChecked(int state)
             }
             ni = new QTableWidgetItem(tr("%1").arg(consulta.value(2).toString()));
             reg_precios.tabla->setItem(row,2,ni);
-            ni = new QTableWidgetItem(tr("%1").arg(consulta.value(3).toString()));
+            ni = new QTableWidgetItem(tr("%1").arg(consulta.value(5).toString()));
             reg_precios.tabla->setItem(row,3,ni);
-            ni = new QTableWidgetItem(tr("%1").arg(consulta.value(4).toString()));
+            ni = new QTableWidgetItem(tr("%1").arg(consulta.value(3).toString()));
             reg_precios.tabla->setItem(row,4,ni);
+            ni = new QTableWidgetItem(tr("%1").arg(consulta.value(6).toString()));
+            reg_precios.tabla->setItem(row,5,ni);
+            ni = new QTableWidgetItem(tr("%1").arg(consulta.value(4).toString()));
+            reg_precios.tabla->setItem(row,6,ni);
         }
     }
 }

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'procesos_caja.h'
 **
-** Created: Mon 8. Sep 09:56:33 2014
+** Created: Thu 18. Sep 11:06:06 2014
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
