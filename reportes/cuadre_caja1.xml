@@ -75,7 +75,11 @@ p, li { white-space: pre-wrap; }
         <field id="14" zValue="14" resource="static" posX="52.387" posY="28.575" width="128.852" height="4.762" fontName="Arial" fontSize="10" alignment="1" forecolor="#000000" type="txt" ftype="par" arg="">contingencia</field>
         <field id="15" zValue="15" resource="static" posX="52.387" posY="34.925" width="128.852" height="4.762" fontName="Arial" fontSize="10" alignment="1" forecolor="#000000" type="txt" ftype="par" arg="">observaciones</field>
         <line id="16" zValue="16" resource="static" fromX="50.535" fromY="9.525" toX="50.535" toY="38.629" lineColor="#000000" lineStyle="solid" lineWidth="0.100"/>
+        <field id="17" zValue="17" resource="static" posX="128.588" posY="1.587" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="par" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo</field>
         <line id="18" zValue="18" resource="static" fromX="3.175" fromY="-0.265" toX="184.150" toY="-0.265" lineColor="#000000" lineStyle="solid" lineWidth="0.100"/>
+        <label id="19" zValue="19" resource="static" posX="0.000" posY="1.587" width="128.588" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="1" forecolor="#000000">TOTAL DEPOSITOS/PUNTO DE VENTA</label>
+        <field id="20" zValue="20" resource="static" posX="173.037" posY="1.587" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="par" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo_total</field>
+        <field id="21" zValue="21" resource="static" posX="150.812" posY="1.587" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="par" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">total</field>
     </pagefooter>
     <details>
         <detail id="Detail1" height="4.681" datasource="model" startsOnNewPage="false">
@@ -129,15 +133,22 @@ p, li { white-space: pre-wrap; }
                         <label id="5" zValue="5" resource="static" posX="128.588" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="4" forecolor="#000000">SALDO</label>
                         <label id="6" zValue="6" resource="static" posX="128.588" posY="4.762" width="22.225" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="4" forecolor="#000000">ANTERIOR</label>
                     </groupheader>
+                    <groupfooter height="7.327">
+                        <field id="0" zValue="0" resource="static" posX="128.588" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="var" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo_anterior2</field>
+                        <field id="1" zValue="1" resource="static" posX="150.812" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="var" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">movimiento2</field>
+                        <field id="2" zValue="2" resource="static" posX="173.037" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="var" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo_acumulado2</field>
+                        <label id="3" zValue="3" resource="static" posX="0.000" posY="0.000" width="128.588" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="1" forecolor="#000000">TOTAL PLANILLAS DEPOSITOS</label>
+                        <line id="4" zValue="4" resource="static" fromX="0.000" fromY="0.000" toX="195.262" toY="0.000" lineColor="#000000" lineStyle="solid" lineWidth="0.100"/>
+                    </groupfooter>
                 </group>
             </groups>
         </detail>
         <detail id="Detail5" height="5.027" datasource="model2" startsOnNewPage="false">
             <items>
                 <field id="0" zValue="0" resource="static" posX="0.000" posY="0.000" width="128.588" height="4.762" fontName="Arial" fontSize="9" alignment="33" forecolor="#000000" type="txt" ftype="ds" arg="">5</field>
-                <field id="1" zValue="1" resource="static" posX="173.037" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" alignment="36" forecolor="#000000" type="num" ftype="ds" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">8</field>
-                <field id="2" zValue="2" resource="static" posX="150.812" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" alignment="36" forecolor="#000000" type="num" ftype="ds" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">7</field>
-                <field id="3" zValue="3" resource="static" posX="128.588" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" alignment="36" forecolor="#000000" type="num" ftype="ds" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">6</field>
+                <field id="5" zValue="5" resource="static" posX="173.037" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" alignment="36" forecolor="#000000" type="num" ftype="ds" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">8</field>
+                <field id="6" zValue="6" resource="static" posX="150.812" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" alignment="36" forecolor="#000000" type="num" ftype="ds" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">7</field>
+                <field id="9" zValue="9" resource="static" posX="128.588" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" alignment="36" forecolor="#000000" type="num" ftype="ds" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">6</field>
             </items>
             <groups>
                 <group id="depositos2" groupExp="9" resetVariables="" reprintHeader="false" startsOnNewPage="false">
@@ -207,16 +218,12 @@ p, li { white-space: pre-wrap; }
                         <label id="5" zValue="5" resource="static" posX="173.037" posY="4.762" width="22.225" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="4" forecolor="#000000">ACUMULADO</label>
                         <label id="6" zValue="6" resource="static" posX="173.037" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="4" forecolor="#000000">SALDO</label>
                     </groupheader>
-                    <groupfooter height="14.817">
+                    <groupfooter height="7.327">
                         <field id="0" zValue="0" resource="static" posX="173.037" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="var" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo_acumulado4</field>
                         <field id="1" zValue="1" resource="static" posX="128.588" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="var" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo_anterior4</field>
                         <field id="2" zValue="2" resource="static" posX="150.812" posY="0.000" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="var" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">movimiento4</field>
                         <label id="3" zValue="3" resource="static" posX="0.000" posY="0.000" width="128.588" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="1" forecolor="#000000">TOTAL TARJETA DE CREDITO</label>
                         <line id="4" zValue="4" resource="static" fromX="0.000" fromY="0.000" toX="195.262" toY="0.000" lineColor="#000000" lineStyle="solid" lineWidth="0.100"/>
-                        <field id="5" zValue="5" resource="static" posX="128.588" posY="9.525" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="par" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo</field>
-                        <label id="6" zValue="6" resource="static" posX="0.000" posY="9.525" width="128.588" height="4.762" fontName="Arial" fontSize="9" fontWeight="bold" alignment="1" forecolor="#000000">TOTAL DEPOSITOS/PUNTO DE VENTA</label>
-                        <field id="7" zValue="7" resource="static" posX="150.812" posY="9.525" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="par" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">total</field>
-                        <field id="8" zValue="8" resource="static" posX="173.037" posY="9.525" width="22.225" height="4.762" fontName="Arial" fontSize="10" fontWeight="bold" alignment="4" forecolor="#000000" type="num" ftype="par" formatting="true" numwidth="0" format="f" precision="2" fillchar=" " localized="false" arg="">saldo_total</field>
                     </groupfooter>
                 </group>
             </groups>

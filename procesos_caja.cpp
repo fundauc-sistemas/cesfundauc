@@ -377,7 +377,8 @@ void procesos_caja::guardarDeposito()
     else
         consulta.exec("commit");
 
-    if(!consulta.exec("insert into factura_deposito values('"+new_deposito.factura->text()+"','"+new_deposito.referencia->text()+"','"+banco+"','"+pago+"')"))
+    //Asocio el deposito a un numero de factura. En este caso manual, como lo indica el status 'S'.
+    if(!consulta.exec("insert into factura_deposito values('"+new_deposito.factura->text()+"','"+new_deposito.referencia->text()+"','"+banco+"','"+pago+"','S',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'))"))
     {
         QMessageBox::critical(0,"Error Factura-Deposito",consulta.lastError().text());
         return;
@@ -2074,7 +2075,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
     //iva.replace(QString("."), QString(","));
     //monto.replace(QString("."), QString(","));
 
-    if(!consulta.exec("insert into factura values('"+factura+"','FA','"+cedula2+"','"+nombre+"','1',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+monto+"','"+piva+"','"+iva+"','0','0','"+dir+"','"+cedula+"','V','1','0','"+programa+"','s','"+nombre2+"','"+prog_academico+"','"+usuario+"')"))
+    if(!consulta.exec("insert into factura values('"+factura+"','FA','"+cedula2+"','"+nombre+"','1',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+monto+","+piva+","+iva+",'0','0','"+dir+"','"+cedula+"','V','1','0','"+programa+"','s','"+nombre2+"','"+prog_academico+"','"+usuario+"')"))
         QMessageBox::critical(0,"Error Factura",consulta.lastError().text());
     else
         consulta.exec("commit");
@@ -2088,7 +2089,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
         //subtotal.replace(QString("."), QString(","));
         tipo=aux[0];
 
-        if(!consulta.exec("insert into detalle_factura values (detalle_factura_sec.nextval,'"+programa+"','"+factura+"','"+aux[0]+"','"+aux[1]+"','"+aux[2]+"','"+aux[3]+"','"+precio+"','0','"+subtotal+"','0')"))
+        if(!consulta.exec("insert into detalle_factura values (detalle_factura_sec.nextval,'"+programa+"','"+factura+"','"+aux[0]+"','"+aux[1]+"','"+aux[2]+"','"+aux[3]+"',"+precio+",'0',"+subtotal+",'0')"))
             QMessageBox::critical(0,"Error Detalle Factura",consulta.lastError().text());
         else
             consulta.exec("commit");
@@ -2125,7 +2126,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
             {
                 actual.setNum(consulta.value(0).toInt()+1);
 
-                if(!consulta2.exec("insert into ficha_pago values(ficha_pago_s.nextval,'2',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','"+cuota+"','"+matricula+"','V','"+tr("%1").arg(consulta.value(1).toInt())+"')"))
+                if(!consulta2.exec("insert into ficha_pago values(ficha_pago_s.nextval,'2',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','"+cuota+"','"+matricula+"','V','"+tr("%1").arg(consulta.value(1).toInt())+"')"))
                     QMessageBox::critical(0,"Error Ficha Pago",consulta2.lastError().text());
                 else
                     consulta2.exec("commit");
@@ -2150,7 +2151,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
         }
         else if(tipo=="M")
         {
-            if(!consulta.exec("insert into ficha_pago values(ficha_pago_s.nextval,'1',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','0','"+matricula+"','V','1')"))
+            if(!consulta.exec("insert into ficha_pago values(ficha_pago_s.nextval,'1',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','0','"+matricula+"','V','1')"))
                 QMessageBox::critical(0,"Error Ficha Pago",consulta.lastError().text());
             else
                 consulta.exec("commit");
@@ -2167,7 +2168,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
             else
                 consulta.exec("commit");
 
-            if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'2',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','0','V','"+subtotal+"','"+f_curso+"')"))
+            if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'2',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','0','V','"+subtotal+"','"+f_curso+"')"))
                 QMessageBox::critical(0,"Error Ficha Pago CFP",consulta.lastError().text());
             else
                 consulta.exec("commit");
@@ -2209,7 +2210,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
             else
                 consulta.exec("commit");
 
-            if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'47',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','0','V','"+subtotal+"','"+f_curso+"')"))
+            if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'47',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','0','V','"+subtotal+"','"+f_curso+"')"))
                 QMessageBox::critical(0,"Error Ficha Pago CFP",consulta.lastError().text());
             else
                 consulta.exec("commit");
@@ -2227,7 +2228,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
                 cuota.setNum(consulta.value(0).toInt()+ aux[3].toInt());
                 acumulado=consulta.value(1).toDouble();
             }
-            if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'18',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','"+cuota+"','V','"+tr("%1").arg(acumulado+subtotal.toDouble())+"','"+f_curso+"')"))
+            if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'18',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','"+cuota+"','V','"+tr("%1").arg(acumulado+subtotal.toDouble())+"','"+f_curso+"')"))
                 QMessageBox::critical(0,"Error Ficha Pago CFP",consulta.lastError().text());
             else
                 consulta.exec("commit");
@@ -2255,7 +2256,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
                 cuota.setNum(consulta.value(0).toInt()+ aux[3].toInt());
                 nivel=consulta.value(1).toString();
             }
-            if(!consulta.exec("insert into ficha_pago values(ficha_pago_s.nextval,'18',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','"+cuota+"','"+matricula+"','V','"+nivel+"')"))
+            if(!consulta.exec("insert into ficha_pago values(ficha_pago_s.nextval,'18',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','"+cuota+"','"+matricula+"','V','"+nivel+"')"))
                 QMessageBox::critical(0,"Error Ficha Pago",consulta.lastError().text());
             else
                 consulta.exec("commit");
@@ -2287,7 +2288,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
                         cuota.setNum(consulta.value(0).toInt());
                         acumulado=consulta.value(1).toDouble();
                     }
-                    if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'53',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','"+cuota+"','V','"+tr("%1").arg(acumulado+subtotal.toDouble())+"','"+f_curso+"')"))
+                    if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'53',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','"+cuota+"','V','"+tr("%1").arg(acumulado+subtotal.toDouble())+"','"+f_curso+"')"))
                         QMessageBox::critical(0,"Error Ficha Pago CFP",consulta.lastError().text());
                     else
                         consulta.exec("commit");
@@ -2305,7 +2306,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
                     {
                         evento=consulta.value(0).toString();
                     }
-                    if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'"+evento+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','"+cuota+"','V','"+tr("%1").arg(acumulado)+"','"+f_curso+"')"))
+                    if(!consulta.exec("insert into ficha_pago_cfp values(ficha_pago_cfp_s.nextval,'"+evento+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','"+aux[2]+"','"+matricula+"','"+cuota+"','V','"+tr("%1").arg(acumulado)+"','"+f_curso+"')"))
                         QMessageBox::critical(0,"Error Ficha Pago CFP",consulta.lastError().text());
                     else
                         consulta.exec("commit");
@@ -2337,7 +2338,7 @@ void procesos_caja::guardarFactura(QList<QList<QString> > items,QString factura,
                     {
                         evento=consulta.value(0).toString();
                     }
-                    if(!consulta.exec("insert into ficha_pago values(ficha_pago_s.nextval,'"+evento+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'"+subtotal+"','"+programa+"','"+factura+"','N','"+cuota+"','"+matricula+"','V','"+nivel+"')"))
+                    if(!consulta.exec("insert into ficha_pago values(ficha_pago_s.nextval,'"+evento+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),"+subtotal+",'"+programa+"','"+factura+"','N','"+cuota+"','"+matricula+"','V','"+nivel+"')"))
                         QMessageBox::critical(0,"Error Ficha Pago",consulta.lastError().text());
                     else
                         consulta.exec("commit");
@@ -2661,7 +2662,7 @@ void procesos_caja::imprimirFactura()
 
                 if((pago != "25")&&(prog_academico != "6"))
                 {
-                    if(!consulta.exec("insert into documentos_trf values('1','DP','"+clase+"','"+factura.f_tabla0->item(i,3)->text()+"','B','"+banco+"','',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'','"+monto2+"','','"+usuario+"','','',to_date('"+factura.f_tabla0->item(i,0)->text()+"','dd-mm-yyyy'),'','','','s','"+factura.f_piva_2->text()+"','0','"+banco+"','','"+pago+"','','','','','','','','','"+nfactura+"')"))
+                    if(!consulta.exec("insert into documentos_trf values('1','DP','"+clase+"','"+factura.f_tabla0->item(i,3)->text()+"','B','"+banco+"','',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'),'',"+monto2+",'','"+usuario+"','','',to_date('"+factura.f_tabla0->item(i,0)->text()+"','dd-mm-yyyy'),'','','','s','"+factura.f_piva_2->text()+"','0','"+banco+"','','"+pago+"','','','','','','','','','"+nfactura+"')"))
                     {
                         QMessageBox::critical(0,"Error Documentos Jupiter",consulta.lastError().text());
                         return;
@@ -2669,7 +2670,7 @@ void procesos_caja::imprimirFactura()
                     else
                         consulta.exec("commit");
 
-                    if(!consulta.exec("insert into deposito values('"+factura.f_tabla0->item(i,3)->text()+"',to_date('"+factura.f_tabla0->item(i,0)->text()+"','dd-mm-yyyy'),'"+banco+"','"+monto2+"','"+compania+"','"+clase+"','"+usuario+"','s','"+pago+"','"+prog_academico+"')"))
+                    if(!consulta.exec("insert into deposito values('"+factura.f_tabla0->item(i,3)->text()+"',to_date('"+factura.f_tabla0->item(i,0)->text()+"','dd-mm-yyyy'),'"+banco+"',"+monto2+",'"+compania+"','"+clase+"','"+usuario+"','s','"+pago+"','"+prog_academico+"')"))
                     {
                         QMessageBox::critical(0,"Error Deposito",consulta.lastError().text());
                         return;
@@ -2696,7 +2697,7 @@ void procesos_caja::imprimirFactura()
                     }
                     for(j=0;j<facturas.size();j++)
                     {
-                        if(!consulta.exec("insert into factura_deposito values('"+facturas.at(j)+"','"+factura.f_tabla0->item(i,3)->text()+"','"+banco+"','"+pago+"')"))
+                        if(!consulta.exec("insert into factura_deposito (id_fact,referencia,id_banco,forma_pago,fecha_cre) values('"+facturas.at(j)+"','"+factura.f_tabla0->item(i,3)->text()+"','"+banco+"','"+pago+"',to_date('"+QDate::currentDate().toString("dd-MM-yyyy")+"','dd-mm-yyyy'))"))
                             QMessageBox::critical(0,"Error Factura-Deposito",consulta.lastError().text());
                         else
                             consulta.exec("commit");
@@ -3945,7 +3946,7 @@ void procesos_caja::cierreFacturas()
         if(!total.contains(".",Qt::CaseInsensitive)&&!total.contains(",",Qt::CaseInsensitive))
             total= total+".00";
 
-        consulta.exec("select referencia,id_banco,forma_pago from factura_deposito where id_fact='"+factura+"'");
+        consulta.exec("select referencia,id_banco,forma_pago from factura_deposito where manual is null and id_fact='"+factura+"'");
         while(consulta.next())
         {
             consulta2.exec("select to_char(fecha_emi,'dd-mm-yyyy'),monto from deposito where referencia='"+consulta.value(0).toString()+"' and id_banco='"+consulta.value(1).toString()+"' and forma_pago='"+consulta.value(2).toString()+"'");
@@ -4556,11 +4557,11 @@ void procesos_caja::setupCierre()
 
 void procesos_caja::cuadreCaja()
 {
-    QSqlQuery consulta,consulta2,consulta3,consulta4,consulta5,consulta6;
+    QSqlQuery consulta,consulta2,consulta3,consulta4,consulta6;
     QList<QString> *id_fact;
     QString prog,concepto,academico,rango,observacion,anuladas,desde,hasta,fecha,curso;
     int i,j,cant,sin_libro,sin_cd,x;
-    float saldo_total2,saldo,total,total2,total3,total4,total5,total_cursos,total_libros,total_guias,total_cds,total_otros,precio_guia,precio_cd,precio_libro;
+    float saldo_total2,saldo,total,total2,total3,total4,total5,total6,total_cursos,total_libros,total_guias,total_cds,total_otros,precio_guia,precio_cd,precio_libro;
     bool in=false;
 
     total_cursos=total_libros=total_guias=total_cds=total_otros=0;
@@ -4991,9 +4992,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-                consulta3.exec("select referencia from factura_deposito where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-                consulta3.exec("select referencia from factura_deposito where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
 
             while(consulta3.next())
             {
@@ -5026,6 +5027,49 @@ void procesos_caja::cuadreCaja()
             item->setData(total+saldo,Qt::EditRole);
             model2->setItem(x,3,item);
 
+
+
+            //Depositos de facturas manuales
+
+            total6=0;
+            consulta3.exec("select referencia from factura_deposito where manual='S' and forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and fecha_cre=to_date('"+fecha+"','dd-mm-yyyy')");
+             while(consulta3.next())
+            {
+                consulta4.exec("select monto from deposito where referencia='"+consulta3.value(0).toString()+"' and forma_pago='3' and id_banco='"+consulta.value(0).toString()+"'");
+                while(consulta4.next())
+                {
+                    total6+=consulta4.value(0).toDouble();
+                }
+            }
+            /*saldo=0;
+            consulta2.exec("select * from saldo_acum_bancos where id_banco='"+consulta.value(0).toString()+"' and prog_academico='"+academico+"' and forma_pago=1");
+            while(consulta2.next())
+            {
+                for(i=1;i<32;i++)
+                     saldo+=consulta2.value(i).toDouble();
+            }
+            x++;*/
+
+            item = new QStandardItem();
+            item->setData(consulta.value(1).toString(), Qt::EditRole);
+            model2->setItem(x,5,item);
+            item = new QStandardItem();
+            item->setData(saldo, Qt::EditRole);
+            model2->setItem(x,6,item);
+            item = new QStandardItem();
+            item->setData(total6, Qt::EditRole);
+            model2->setItem(x,7,item);
+            item = new QStandardItem();
+            item->setData(total6+saldo,Qt::EditRole);
+            model2->setItem(x,8,item);
+
+            /*consulta2.exec("update saldo_acum_bancos set "+tr("dia_%1").arg(cont_dialog.fecha->date().day())+"='"+tr("%1").arg(total6)+"' where id_banco='"+consulta.value(0).toString()+"' and prog_academico='"+academico+"' and forma_pago=1");
+            //consulta2.exec("update saldo_acum_bancos set saldo ='"+tr("%1").arg(total+saldo)+"' where id_banco='"+consulta.value(0).toString()+"' and prog_academico='"+academico+"' and forma_pago=1");
+            consulta2.exec("commit");
+
+            total2+=total6;
+            saldo_total2+=saldo;*/
+
             consulta2.exec("update saldo_acum_bancos set "+tr("dia_%1").arg(cont_dialog.fecha->date().day())+"='"+tr("%1").arg(total)+"' where id_banco='"+consulta.value(0).toString()+"' and prog_academico='"+academico+"' and forma_pago=1");
             //consulta2.exec("update saldo_acum_bancos set saldo ='"+tr("%1").arg(total+saldo)+"' where id_banco='"+consulta.value(0).toString()+"' and prog_academico='"+academico+"' and forma_pago=1");
             consulta2.exec("commit");
@@ -5043,9 +5087,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-                consulta3.exec("select referencia from factura_deposito where forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-                consulta3.exec("select referencia from factura_deposito where forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
             while(consulta3.next())
             {
                 consulta4.exec("select monto from deposito where referencia='"+consulta3.value(0).toString()+"' and forma_pago='4' and id_banco='"+consulta.value(0).toString()+"'");
@@ -5092,9 +5136,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-                consulta3.exec("select referencia from factura_deposito where forma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-                consulta3.exec("select referencia from factura_deposito where forma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null andforma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
             while(consulta3.next())
             {
                 consulta4.exec("select monto from deposito where referencia='"+consulta3.value(0).toString()+"' and forma_pago='5' and id_banco='"+consulta.value(0).toString()+"'");
@@ -5560,9 +5604,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-                consulta3.exec("select referencia from factura_deposito where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-                consulta3.exec("select referencia from factura_deposito where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
 
             while(consulta3.next())
             {
@@ -5609,9 +5653,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-                consulta3.exec("select referencia from factura_deposito where forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-                consulta3.exec("select referencia from factura_deposito where forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
 
             while(consulta3.next())
             {
@@ -5887,9 +5931,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-            consulta3.exec("select referencia from factura_deposito where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+            consulta3.exec("select referencia from factura_deposito manual is null and where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-            consulta3.exec("select referencia from factura_deposito where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+            consulta3.exec("select referencia from factura_deposito manual is null and where forma_pago='3' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
 
             while(consulta3.next())
             {
@@ -5950,9 +5994,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-            consulta3.exec("select referencia from factura_deposito where forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-                consulta3.exec("select referencia from factura_deposito where forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='4' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
 
             while(consulta3.next())
             {
@@ -5998,9 +6042,9 @@ void procesos_caja::cuadreCaja()
         {
             total=0;
             if(cont_dialog.user->currentText()=="ACTUAL")
-            consulta3.exec("select referencia from factura_deposito where forma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"' and usuario='"+usuario+"')");
             else
-                consulta3.exec("select referencia from factura_deposito where forma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
+                consulta3.exec("select referencia from factura_deposito where manual is null and forma_pago='5' and id_banco='"+consulta.value(0).toString()+"' and id_fact in (select id_fact from factura where fecha_emi=to_date('"+fecha+"','dd-mm-yyyy') and status='V' and prog_academico='"+academico+"')");
 
             while(consulta3.next())
             {
@@ -6364,12 +6408,12 @@ void procesos_caja::anularFactura()
                         consulta3.exec("select id_seccion,id_curso from ficha_academica where id_evento='"+consulta2.value(0).toString()+"' and matricula='"+matricula+"' and fecha='"+consulta.value(1).toString()+"'");
                         while(consulta3.next())
                         {
-                            consulta4.exec("select cant_actual from secciones where id_curso='"+consulta3.value(1).toString()+"' and id_seccion='"+consulta3.value(0).toString()+"'");
+                            consulta4.exec("select cant_actual from secciones where id_metodo='"+consulta3.value(1).toString()+"' and id_seccion='"+consulta3.value(0).toString()+"'");
                             while(consulta4.next())
                             {
                                 actual=consulta4.value(0).toInt()-1;
                             }
-                            if(!consulta4.exec("update secciones set cant_actual='"+tr("%1").arg(actual)+"' where id_curso='"+consulta3.value(1).toString()+"' and id_seccion='"+consulta3.value(0).toString()+"'"))
+                            if(!consulta4.exec("update secciones set cant_actual='"+tr("%1").arg(actual)+"' where id_metodo='"+consulta3.value(1).toString()+"' and id_seccion='"+consulta3.value(0).toString()+"'"))
                                 QMessageBox::critical(0,"Error Update Seccion",consulta.lastError().text());
                             else
                                 consulta.exec("commit");
@@ -6383,7 +6427,7 @@ void procesos_caja::anularFactura()
             consulta2.exec("delete ficha_academica where id_evento='"+evento+"' and matricula='"+matricula+"' and fecha='"+consulta.value(1).toString()+"'");
             consulta2.exec("commit");
         }
-        consulta.exec("select referencia from factura_deposito where id_fact='"+factura+"'");
+        consulta.exec("select referencia from factura_deposito where manual is null and id_fact='"+factura+"'");
         while(consulta.next())
         {
             consulta2.exec("delete from documentos_trf where dc_numero='"+consulta.value(0).toString()+"'");
@@ -6391,7 +6435,7 @@ void procesos_caja::anularFactura()
             consulta2.exec("commit");
         }
         consulta.exec("delete from cuentas_por_cobrar where id_fact='"+factura+"'");
-        consulta.exec("delete from factura_deposito where id_fact='"+factura+"'");
+        consulta.exec("delete from factura_deposito where manual is null and id_fact='"+factura+"'");
         consulta.exec("update factura set status='A' where id_fact='"+factura+"'");
         consulta.exec("commit");
         reg_factura.r_tabla->removeRow(row);
@@ -6478,7 +6522,10 @@ void procesos_caja::llenarBancos()
 {
     QSqlQuery consulta;
     QTableWidgetItem *ni;
-    int row;
+    int i,row;
+
+    for(i=reg_bancos.tabla->rowCount()-1;i>=0;i--)
+        reg_bancos.tabla->removeRow(i);
 
     consulta.exec("select * from bancos order by id_banco");
     while(consulta.next())

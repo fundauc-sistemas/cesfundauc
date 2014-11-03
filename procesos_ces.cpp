@@ -6144,7 +6144,7 @@ void procesos_ces::llenarControlEvaluacion(QString s)
         porc=consulta.value(0).toDouble();
     }
 
-    consulta.exec("select matricula from ficha_academica where status='V' and id_evento=2 and id_seccion='"+s+"' and fec_inicio=to_date('"+control_evaluacion.inicio->text()+"','dd-mm-yyyy')");
+    consulta.exec("select matricula from ficha_academica where id_evento=2 and id_seccion='"+s+"' and fec_inicio=to_date('"+control_evaluacion.inicio->text()+"','dd-mm-yyyy')");
     while(consulta.next())
     {
         row = control_evaluacion.tabla->rowCount();
