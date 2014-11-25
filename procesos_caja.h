@@ -183,13 +183,14 @@ class procesos_caja : public QWidget
         void periodoChanged();
         void editarEmpresa(int row, int column);
         void actualizarEmpresa();
+        void llenarEmpresas();
 
     private:
 
+        bool proforma;
         QStringList tipo_item;
         QStringList years;
         QStringList meses;
-        bool proforma;
         QWidget *dialogo;
         QWidget *dialogo2;
         QComboBox *d_curso;
@@ -240,7 +241,6 @@ class procesos_caja : public QWidget
         int determinarClaseDoc();
         void saldoDiferido(QString tabla);
         void llenarBancos();
-        void llenarEmpresas();
         int totalDia(QList<QString> *items,QString fecha,QString academico);
         bool duplicarCohorte(QString s);
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'procesos_caja.h'
 **
-** Created: Thu 18. Sep 11:06:06 2014
+** Created: Mon 24. Nov 15:36:52 2014
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_procesos_caja[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      94,   14, // methods
+      95,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -125,6 +125,7 @@ static const uint qt_meta_data_procesos_caja[] = {
     2025,   14,   14,   14, 0x08,
     2042, 1390,   14,   14, 0x08,
     2065,   14,   14,   14, 0x08,
+    2085,   14,   14,   14, 0x08,
 
        0        // eod
 };
@@ -186,7 +187,7 @@ static const char qt_meta_stringdata_procesos_caja[] = {
     "boletaChecked(int)\0facturaChecked(int)\0"
     "nuevoDeposito()\0guardarDeposito()\0"
     "periodoChanged()\0editarEmpresa(int,int)\0"
-    "actualizarEmpresa()\0"
+    "actualizarEmpresa()\0llenarEmpresas()\0"
 };
 
 void procesos_caja::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -289,6 +290,7 @@ void procesos_caja::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 91: _t->periodoChanged(); break;
         case 92: _t->editarEmpresa((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 93: _t->actualizarEmpresa(); break;
+        case 94: _t->llenarEmpresas(); break;
         default: ;
         }
     }
@@ -326,9 +328,9 @@ int procesos_caja::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 94)
+        if (_id < 95)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 94;
+        _id -= 95;
     }
     return _id;
 }

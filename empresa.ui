@@ -53,7 +53,7 @@ color: rgb(00,56,147);</string>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="rif">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -82,7 +82,7 @@ color: rgb(00,56,147);</string>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_2">
+      <widget class="QLineEdit" name="nombre">
        <property name="minimumSize">
         <size>
          <width>0</width>

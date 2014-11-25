@@ -402,6 +402,7 @@ void procesos_caja::mesValija()
     connect(ok,SIGNAL(clicked()),this,SLOT(generarValija()));
 
     QLabel *label1,*label2;
+    //label1->setFont("Segoe");
     label1= new QLabel(tr("Desde:"));
     label2= new QLabel(tr("Hasta:"));
     QVBoxLayout *v = new QVBoxLayout();
@@ -1377,39 +1378,52 @@ void procesos_caja::saldoDiferido(QString tabla)
     QSqlQuery consulta,consulta2;
     QString tiva,ttotal,texto,tsaldo;
     float iva,total,saldo;
+    bool mostrado;
+    int i;
 
-    consulta.exec("select renglon,monto from "+tabla+" where matricula='"+factura.f_matricula->text()+"' and id_evento='43' and status='V'");
-    while(consulta.next())
+   // QMessageBox::information(0,"",tr("%1").arg(factura.f_tabla->rowCount()));
+    mostrado=false;
+    for(i=0;i<factura.f_tabla->rowCount();i++)
     {
-        int row = factura.f_tabla->rowCount();
-        factura.f_tabla->insertRow(row);
-        QTableWidgetItem *ni = new QTableWidgetItem(tr("ID"));
-        factura.f_tabla->setItem(row,0,ni);
-        ni = new QTableWidgetItem(tr("IDN"));
-        factura.f_tabla->setItem(row,1,ni);
-        ni = new QTableWidgetItem(tr("INGRESO DIFERIDO NEGATIVO"));
-        factura.f_tabla->setItem(row,2,ni);
-        ni = new QTableWidgetItem(tr("1"));
-        factura.f_tabla->setItem(row,3,ni);
-        saldo=consulta.value(1).toDouble()*(-1);
-        tsaldo.setNum(saldo,'g',10);
-        if(!tsaldo.contains(".",Qt::CaseInsensitive)&&!tsaldo.contains(",",Qt::CaseInsensitive))
-            tsaldo= tsaldo+".00";
-        ni = new QTableWidgetItem(tr("%1").arg(tsaldo));
-        factura.f_tabla->setItem(row,4,ni);
-        ni = new QTableWidgetItem(tr("%1").arg(tsaldo));
-        factura.f_tabla->setItem(row,5,ni);
+        if(factura.f_tabla->item(i,0)->text()=="ID")
+            mostrado=true;
+    }
 
-        texto.setNum(factura.f_subtotal_2->text().toFloat() + saldo,'g',10);
-        factura.f_subtotal_2->setText(texto);
-        iva = (factura.f_subtotal_2->text().toFloat()*factura.f_iva_2->text().toFloat())/100;
-        total = factura.f_subtotal_2->text().toFloat() + iva;
-        tiva.setNum(iva,'g',10);
-        ttotal.setNum(total,'g',10);
-        factura.f_iva_2->setText(tiva);
-        factura.f_total_2->setText(ttotal);
-        consulta2.exec("update "+tabla+" set status='H' where renglon='"+consulta2.value(0).toString()+"'");
-        consulta2.exec("commit");
+    if(!mostrado)
+    {
+        consulta.exec("select renglon,monto from "+tabla+" where matricula='"+factura.f_matricula->text()+"' and id_evento='43' and status='V'");
+        while(consulta.next())
+        {
+            int row = factura.f_tabla->rowCount();
+            factura.f_tabla->insertRow(row);
+            QTableWidgetItem *ni = new QTableWidgetItem(tr("ID"));
+            factura.f_tabla->setItem(row,0,ni);
+            ni = new QTableWidgetItem(tr("IDN"));
+            factura.f_tabla->setItem(row,1,ni);
+            ni = new QTableWidgetItem(tr("INGRESO DIFERIDO NEGATIVO"));
+            factura.f_tabla->setItem(row,2,ni);
+            ni = new QTableWidgetItem(tr("1"));
+            factura.f_tabla->setItem(row,3,ni);
+            saldo=consulta.value(1).toDouble()*(-1);
+            tsaldo.setNum(saldo,'g',10);
+            if(!tsaldo.contains(".",Qt::CaseInsensitive)&&!tsaldo.contains(",",Qt::CaseInsensitive))
+                tsaldo= tsaldo+".00";
+            ni = new QTableWidgetItem(tr("%1").arg(tsaldo));
+            factura.f_tabla->setItem(row,4,ni);
+            ni = new QTableWidgetItem(tr("%1").arg(tsaldo));
+            factura.f_tabla->setItem(row,5,ni);
+
+            texto.setNum(factura.f_subtotal_2->text().toFloat() + saldo,'g',10);
+            factura.f_subtotal_2->setText(texto);
+            iva = (factura.f_subtotal_2->text().toFloat()*factura.f_iva_2->text().toFloat())/100;
+            total = factura.f_subtotal_2->text().toFloat() + iva;
+            tiva.setNum(iva,'g',10);
+            ttotal.setNum(total,'g',10);
+            factura.f_iva_2->setText(tiva);
+            factura.f_total_2->setText(ttotal);
+            consulta2.exec("update "+tabla+" set status='H' where renglon='"+consulta2.value(0).toString()+"'");
+            consulta2.exec("commit");
+        }
     }
 }
 
@@ -4721,9 +4735,9 @@ void procesos_caja::cuadreCaja()
                         total3+=precio_libro;
                         total2+=consulta3.value(1).toDouble()-precio_libro-precio_guia-precio_cd; //Ingreso por curso
 
-
+/*
                         if(i==9)
-                            QMessageBox::information(0,curso,tr("%1 - %2").arg(consulta3.value(2).toString()).arg(total2));
+                            QMessageBox::information(0,curso,tr("%1 - %2").arg(consulta3.value(2).toString()).arg(total2));*/
                         id_fact->append(consulta3.value(2).toString());
                     }
                 }
@@ -6661,6 +6675,10 @@ void procesos_caja::registroEmpresas()
     reg_empresas.tabla->setColumnWidth(1,300);
     reg_empresas.tabla->setColumnWidth(2,500);
     reg_empresas.tabla->setColumnWidth(3,100);
+    connect(reg_empresas.rif,SIGNAL(textEdited(QString)),this,SLOT(toUpper(QString)));
+    connect(reg_empresas.nombre,SIGNAL(textEdited(QString)),this,SLOT(toUpper(QString)));
+    connect(reg_empresas.rif,SIGNAL(returnPressed()),this,SLOT(llenarEmpresas()));
+    connect(reg_empresas.nombre,SIGNAL(returnPressed()),this,SLOT(llenarEmpresas()));
     llenarEmpresas();
 }
 
@@ -6670,11 +6688,16 @@ void procesos_caja::llenarEmpresas()
     QSqlQuery consulta;
     QTableWidgetItem *ni;
     int row,i;
-
+    QLineEdit *le = qobject_cast<QLineEdit *>(sender());
     for(i=reg_empresas.tabla->rowCount()-1;i>=0;i--)
         reg_empresas.tabla->removeRow(i);
 
-    consulta.exec("select * from empresas order by razon");
+    if(reg_empresas.nombre->text()!="")
+        consulta.exec("select * from empresas where razon like '%"+le->text()+"%'");
+    else if(reg_empresas.rif->text()!="")
+        consulta.exec("select * from empresas where rif='"+le->text()+"'");
+    else
+        consulta.exec("select * from empresas order by razon");
     while(consulta.next())
     {
         row=reg_empresas.tabla->rowCount();

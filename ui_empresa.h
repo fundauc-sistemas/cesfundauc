@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'empresa.ui'
 **
-** Created: Mon 1. Sep 11:26:33 2014
-**      by: Qt User Interface Compiler version 4.8.1
+** Created: Thu 6. Nov 15:54:57 2014
+**      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -31,9 +31,9 @@ public:
     QLabel *label;
     QHBoxLayout *horizontalLayout;
     QLabel *label_2;
-    QLineEdit *lineEdit;
+    QLineEdit *rif;
     QLabel *label_3;
-    QLineEdit *lineEdit_2;
+    QLineEdit *nombre;
     QTableWidget *tabla;
 
     void setupUi(QWidget *empresas)
@@ -66,12 +66,12 @@ public:
 
         horizontalLayout->addWidget(label_2);
 
-        lineEdit = new QLineEdit(empresas);
-        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
-        lineEdit->setMinimumSize(QSize(0, 25));
-        lineEdit->setMaximumSize(QSize(150, 16777215));
+        rif = new QLineEdit(empresas);
+        rif->setObjectName(QString::fromUtf8("rif"));
+        rif->setMinimumSize(QSize(0, 25));
+        rif->setMaximumSize(QSize(150, 16777215));
 
-        horizontalLayout->addWidget(lineEdit);
+        horizontalLayout->addWidget(rif);
 
         label_3 = new QLabel(empresas);
         label_3->setObjectName(QString::fromUtf8("label_3"));
@@ -79,11 +79,11 @@ public:
 
         horizontalLayout->addWidget(label_3);
 
-        lineEdit_2 = new QLineEdit(empresas);
-        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
-        lineEdit_2->setMinimumSize(QSize(0, 25));
+        nombre = new QLineEdit(empresas);
+        nombre->setObjectName(QString::fromUtf8("nombre"));
+        nombre->setMinimumSize(QSize(0, 25));
 
-        horizontalLayout->addWidget(lineEdit_2);
+        horizontalLayout->addWidget(nombre);
 
 
         verticalLayout->addLayout(horizontalLayout);

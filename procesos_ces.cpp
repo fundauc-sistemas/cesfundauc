@@ -392,6 +392,7 @@ void procesos_ces::registroEmpresas(QString rif, QString matricula)
     connect(reg_empresas.razon,SIGNAL(textEdited(QString)),this,SLOT(toUpper(QString)));
     connect(reg_empresas.dir,SIGNAL(textEdited(QString)),this,SLOT(toUpper(QString)));
     connect(reg_empresas.aceptar,SIGNAL(pressed()),this,SLOT(nuevaEmpresa()));
+
     estudianteFrame->show();
 }
 
@@ -413,6 +414,7 @@ void procesos_ces::nuevaEmpresa()
         }
     }
 }
+
 
 
 void procesos_ces::registroProfesores()
